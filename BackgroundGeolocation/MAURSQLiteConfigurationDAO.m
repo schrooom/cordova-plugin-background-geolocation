@@ -6,7 +6,7 @@
 //  Copyright © 2017 mauron85. All rights reserved.
 //
 
-#import "sqlite3.h"
+#import <sqlite3.h>
 #import <CoreLocation/CoreLocation.h>
 #import "MAURSQLiteHelper.h"
 #import "MAURGeolocationOpenHelper.h"
@@ -28,7 +28,7 @@
     dispatch_once(&onceToken, ^{
         instance = [[self alloc] init];
     });
-    
+
     return instance;
 }
 
@@ -45,7 +45,7 @@
     __block BOOL success = NO;
 
     NSError *error = nil;
-    
+
     NSString *httpHeadersString = [config getHttpHeadersAsString:&error];
     if (error != nil) {
         NSLog(@"Http headers serialization error: %@", error);
@@ -57,7 +57,7 @@
         NSLog(@"Template serialization error: %@", error);
         return false;
     }
-   
+
     NSString *sql = @"INSERT OR REPLACE INTO " @CC_TABLE_NAME @" ("
         @CC_COLUMN_NAME_ID
         @COMMA_SEP @CC_COLUMN_NAME_RADIUS
@@ -126,7 +126,7 @@
             NSLog(@"Persisting configuration has failed code: %d: message: %@", [database lastErrorCode], [database lastErrorMessage]);
         }
     }];
-    
+
     return success;
 }
 
@@ -163,7 +163,7 @@
     @COMMA_SEP @CC_COLUMN_NAME_PAUSE_LOCATION_UPDATES
     @COMMA_SEP @CC_COLUMN_NAME_TEMPLATE
     @" FROM " @CC_TABLE_NAME @" WHERE " @CC_COLUMN_NAME_ID @" = 1";
-    
+
     [queue inDatabase:^(FMDatabase *database) {
         FMResultSet *rs = [database executeQuery:sql];
         while([rs next]) {
@@ -225,17 +225,17 @@
                 }
             }
         }
-        
+
         [rs close];
     }];
-    
+
     return config;
 }
 
 - (BOOL) clearDatabase
 {
     __block BOOL success;
-    
+
     [queue inDatabase:^(FMDatabase *database) {
         NSString *sql = [NSString stringWithFormat: @"DELETE FROM %@", @CC_TABLE_NAME];
         if (![database executeStatements:sql]) {
@@ -245,7 +245,7 @@
             success = YES;
         }
     }];
-    
+
     return success;
 }
 
